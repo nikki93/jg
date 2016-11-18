@@ -5,24 +5,48 @@ import {
   Text,
   View,
 } from 'react-native';
+import REGL from 'regl';
 
-class App extends React.Component {
-  render() {
-    return (
-      <View style={styles.container}>
-        <Text>hello, world</Text>
-      </View>
-    );
-  }
+const onGLContextCreate = (gl) => {
+  const regl = REGL({ gl });
+
+  const draw = regl({
+    vert: `
+precision highp float;
+attribute vec2 position;
+void main() {
+  gl_Position = vec4(position, 0, 1);
+}`,
+    frag: `
+precision highp float;
+void main() {
+  gl_FragColor = vec4(1, 0, 0, 1);
+}`,
+    attributes: {
+      position: [[-1, 0], [0, -1], [1, 1]],
+    },
+    count: 3,
+  });
+
+  const frame = () => {
+    regl.poll();
+    regl.clear({
+      color: [0, 0, 0, 1],
+      depth: 1,
+    });
+
+    draw();
+
+    gl.flush();
+    gl.endFrameEXP();
+    requestAnimationFrame(frame);
+  };
+  frame();
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
-
-Exponent.registerRootComponent(App);
+Exponent.registerRootComponent(() => (
+  <Exponent.GLView
+    style={{ flex: 1 }}
+    onContextCreate={onGLContextCreate}
+  />
+));
