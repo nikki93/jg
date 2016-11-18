@@ -8,8 +8,12 @@
   "dependencies": {
     "@exponent/vector-icons": "~2.0.3",
     "exponent": "11.0.3-rc.1",
+    "glslify": "^6.0.1",
     "react": "~15.3.2",
     "react-native": "git+https://github.com/exponentjs/react-native#sdk-11.0.3",
     "regl": "^1.3.0"
+  },
+  "devDependencies": {
+    "babel-plugin-glslify": "^2.0.0"
   }
 }

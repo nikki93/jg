@@ -6,22 +6,14 @@ import {
   View,
 } from 'react-native';
 import REGL from 'regl';
+import glslify from 'glslify';
 
 const onGLContextCreate = (gl) => {
   const regl = REGL({ gl });
 
   const draw = regl({
-    vert: `
-precision highp float;
-attribute vec2 position;
-void main() {
-  gl_Position = vec4(position, 0, 1);
-}`,
-    frag: `
-precision highp float;
-void main() {
-  gl_FragColor = vec4(1, 0, 0, 1);
-}`,
+    vert: glslify('./simple.vert'),
+    frag: glslify('./simple.frag'),
     attributes: {
       position: [[-1, 0], [0, -1], [1, 1]],
     },
